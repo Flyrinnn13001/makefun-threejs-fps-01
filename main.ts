@@ -3,7 +3,7 @@
 // the output directory and writes /output/dossier.json with buildDossier
 // from the kit's library. Outside the grader, MAKEFUN_OUTPUT_DIR stands in
 // for /output; the program runs twice and both runs write the same bytes.
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-threejs.ts';
@@ -11,7 +11,9 @@ import { buildDossier } from './vendor/makefun-threejs.ts';
 const repo = dirname(fileURLToPath(import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR || '/output';
 
-if (existsSync(out)) rmSync(out, { recursive: true, force: true });
+// Never delete the output directory: in the grader it may be a prepared
+// mount that cannot be removed. Create it if needed and copy over it,
+// exactly like the kit's starter program does.
 mkdirSync(out, { recursive: true });
 
 for (const dir of ['game', 'screenshots']) {
